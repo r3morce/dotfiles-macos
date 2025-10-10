@@ -37,6 +37,7 @@ alias sb="wezterm cli split-pane --bottom"
 alias nt="wezterm cli set-tab-title"
 alias ca="cursor-agent text"
 alias gs="git status"
+alias lg="lazygit"
 alias fd='fd -I'
 
 # Safety aliases
