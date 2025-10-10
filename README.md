@@ -64,20 +64,12 @@ stow -D zsh nvim
 stow -R .
 ```
 
-## Key Aliases
+## Validation
+
+This repository includes automated validation to ensure configuration files are valid:
 
 ```bash
-p          # cd to ~/Documents/projects/
-s          # cd to ~/Documents/sandbox/
-sl         # split pane left in WezTerm
-sb         # split pane bottom in WezTerm
-nt         # set tab title in WezTerm
-ca         # cursor-agent text
-gs         # git status
-lg         # lazygit
-ls/ll/la   # eza with icons
+# Run local validation
+./validate.sh
 ```
 
-## License
-
-Public Domain - See [LICENSE](LICENSE) for details.
