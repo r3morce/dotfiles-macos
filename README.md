@@ -24,7 +24,7 @@ brew install zsh-autosuggestions zsh-syntax-highlighting powerlevel10k
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/dotfiles-macos.git ~/.dotfiles
+git clone https://github.com/r3morce/dotfiles-macos.git ~/.dotfiles
 
 # Navigate to dotfiles directory
 cd ~/.dotfiles
