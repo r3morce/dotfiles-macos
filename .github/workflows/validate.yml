@@ -23,15 +23,15 @@ jobs:
       run: |
         # Install tools for validation
         sudo apt-get update
-        sudo apt-get install -y lua5.4 luarocks
+        sudo apt-get install -y zsh lua5.4 luarocks
         sudo luarocks install luacheck
         
     - name: Validate Zsh configuration
       run: |
-        echo "Validating .zshrc syntax..."
+        echo "Validating zsh/.zshrc syntax..."
         if command -v zsh >/dev/null 2>&1; then
           zsh -n zsh/.zshrc
-          echo "✅ .zshrc syntax is valid"
+          echo "✅ zsh/.zshrc syntax is valid"
         else
           echo "⚠️  zsh not available, skipping .zshrc validation"
         fi
@@ -39,7 +39,18 @@ jobs:
     - name: Validate Neovim configuration
       run: |
         echo "Validating Neovim Lua files..."
-        find nvim -name "*.lua" -exec lua -l {} \; 2>/dev/null || echo "⚠️  Some Lua files may have issues"
+        # Check syntax of all Lua files
+        lua_errors=0
+        for file in $(find nvim -name "*.lua"); do
+          if ! lua5.4 -c "$file" 2>/dev/null; then
+            echo "⚠️  Lua file may have syntax issues: $file"
+            lua_errors=1
+          fi
+        done
+        
+        if [ $lua_errors -eq 0 ]; then
+          echo "✅ All Neovim Lua files have valid syntax"
+        fi
         
         # Check for common Lua issues
         if command -v luacheck >/dev/null 2>&1; then
@@ -50,10 +61,10 @@ jobs:
     - name: Validate WezTerm configuration
       run: |
         echo "Validating WezTerm configuration..."
-        if command -v lua >/dev/null 2>&1; then
-          lua -e "dofile('wezterm/.config/wezterm/wezterm.lua')" 2>/dev/null && echo "✅ WezTerm configuration is valid" || echo "⚠️  WezTerm configuration may have issues"
+        if command -v lua5.4 >/dev/null 2>&1; then
+          lua5.4 -c wezterm/.config/wezterm/wezterm.lua 2>/dev/null && echo "✅ WezTerm configuration syntax is valid" || echo "⚠️  WezTerm configuration may have syntax issues"
         else
-          echo "⚠️  lua not available, skipping WezTerm validation"
+          echo "⚠️  lua5.4 not available, skipping WezTerm validation"
         fi
         
     - name: Check file structure
@@ -106,7 +117,17 @@ jobs:
               if [ -n "$subdir_dotfiles" ]; then
                 echo "✅ $dir has dotfiles in subdirectories (Stow-compatible)"
               else
-                echo "⚠️  $dir has no dotfiles found"
+                # For wezterm, also check for .lua files in .config subdirectories
+                if [ "$dir" = "wezterm" ]; then
+                  config_files=$(find "$dir" -name "*.lua" -type f)
+                  if [ -n "$config_files" ]; then
+                    echo "✅ $dir has configuration files in subdirectories (Stow-compatible)"
+                  else
+                    echo "⚠️  $dir has no configuration files found"
+                  fi
+                else
+                  echo "⚠️  $dir has no dotfiles found"
+                fi
               fi
             fi
           fi
@@ -119,11 +140,6 @@ jobs:
         # Check for hardcoded paths (informational only)
         if grep -r "/Users/" . --exclude-dir=.git --exclude-dir=.github; then
           echo "ℹ️  Found hardcoded user paths. Consider using \$HOME or ~ instead for better portability."
-        fi
-        
-        # Check for TODO/FIXME comments (excluding Powerlevel10k config)
-        if grep -r "TODO\|FIXME" . --exclude-dir=.git --exclude-dir=.github | grep -v "POWERLEVEL9K_TODO"; then
-          echo "ℹ️  Found TODO/FIXME comments in configuration files"
         fi
         
         echo "✅ Configuration validation complete"
