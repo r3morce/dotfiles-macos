@@ -1,6 +1,6 @@
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # History configuration
 HISTSIZE=10000
@@ -13,7 +13,7 @@ setopt HIST_IGNORE_SPACE
 # Load Oh My Zsh first (without theme since we use p10k)
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=""  # Disable Oh My Zsh theme to use p10k
-plugins=(git)
+plugins=()
 source $ZSH/oh-my-zsh.sh
 
 # Load autosuggestions
