@@ -13,9 +13,6 @@ Install required tools:
 # Install core tools
 brew install stow neovim wezterm zoxide eza fd
 
-# Install Oh My Zsh
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
 # Install Zsh plugins
 brew install zsh-autosuggestions zsh-syntax-highlighting powerlevel10k
 ```

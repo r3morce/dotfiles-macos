@@ -10,11 +10,8 @@ setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 
-# Load Oh My Zsh first (without theme since we use p10k)
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME=""  # Disable Oh My Zsh theme to use p10k
-plugins=()
-source $ZSH/oh-my-zsh.sh
+# Basic zsh completion
+autoload -U compinit && compinit
 
 # Load autosuggestions
 export PATH="/opt/homebrew/bin:$PATH"
@@ -40,12 +37,29 @@ alias gs="git status"
 alias lg="lazygit"
 alias fd='fd -I'
 
-# Safety aliases
-alias rm="rm -i"
+# Utility aliases
+alias lsl="ls -la"  # Show symlinks clearly
+alias readlink="readlink -f"  # Show absolute path of symlink target
 
 # Useful Functions
 mkcd() { mkdir -p "$1" && cd "$1"; }
 serve() { python3 -m http.server ${1:-8000}; }
+
+# Check if something is a symlink and show target
+islink() {
+    if [ $# -eq 0 ]; then
+        echo "Usage: islink <file_or_directory>"
+        return 1
+    fi
+    
+    for item in "$@"; do
+        if [ -L "$item" ]; then
+            echo "🔗 $item -> $(readlink "$item")"
+        else
+            echo "📄 $item (not a symlink)"
+        fi
+    done
+}
 
 
 # Initialize tools
